@@ -1,17 +1,12 @@
 // Import required packages
 import * as restify from "restify";
-
-// Import required bot services.
-// See https://aka.ms/bot-services to learn more about the different parts of a bot.
 import {
   CloudAdapter,
   ConfigurationServiceClientCredentialFactory,
   ConfigurationBotFrameworkAuthentication,
   TurnContext,
 } from "botbuilder";
-
-// This bot's main dialog.
-import { TeamsBot } from "./teamsBot";
+import { ActionApp } from "./actionApp";
 import config from "./config";
 
 // Create adapter.
@@ -52,8 +47,8 @@ const onTurnErrorHandler = async (context: TurnContext, error: Error) => {
 // Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
-// Create the bot that will handle incoming messages.
-const bot = new TeamsBot();
+// Create the app that will handle action commands.
+const actionApp = new ActionApp();
 
 // Create HTTP server.
 const server = restify.createServer();
@@ -65,6 +60,6 @@ server.listen(process.env.port || process.env.PORT || 3978, () => {
 // Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
   await adapter.process(req, res, async (context) => {
-    await bot.run(context);
+    await actionApp.run(context);
   });
 });

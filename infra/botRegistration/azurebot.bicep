@@ -35,3 +35,4 @@ resource botServiceMsTeamsChannel 'Microsoft.BotService/botServices/channels@202
     channelName: 'MsTeamsChannel'
   }
 }
+

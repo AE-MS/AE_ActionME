@@ -48,7 +48,7 @@ provision:
           # variable before ARM deployment.
           parameters: ./infra/azure.parameters.json
           # Required when deploying ARM template
-          deploymentName: Create-resources-for-tab
+          deploymentName: Create-resources-for-me-action
       # Teams Toolkit will download this bicep CLI version from github for you,
       # will use bicep CLI in PATH if you remove this config.
       bicepCliVersion: v0.9.1
@@ -138,4 +138,4 @@ publish:
     # the specified environment variable(s).
     writeToEnvironmentFile:
       publishedAppId: TEAMS_APP_PUBLISHED_APP_ID
-projectId: 14875497-747b-45e7-9fe4-5908008912ea
+projectId: 3596f40f-d8f1-4327-ac9f-2e370f712983
