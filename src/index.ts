@@ -52,6 +52,13 @@ const actionApp = new ActionApp();
 
 // Create HTTP server.
 const server = restify.createServer();
+
+server.on('after', function(req, res, route, error) {
+  console.log("------------------------")
+  console.log(req.route.path)
+  console.log(req.body)
+});
+
 server.use(restify.plugins.bodyParser());
 server.listen(process.env.port || process.env.PORT || 3978, () => {
   console.log(`\nBot Started, ${server.name} listening to ${server.url}`);

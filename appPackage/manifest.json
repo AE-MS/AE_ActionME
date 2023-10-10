@@ -60,18 +60,6 @@
                     ]
                 },
                 {
-                    "id": "fetchUrlDialog",
-                    "context": [
-                        "compose",
-                        "message",
-                        "commandBox"
-                    ],
-                    "description": "Fetch a URL dialog",
-                    "title": "AE: Fetch URL Dialog",
-                    "type": "action",
-                    "fetchTask": true
-                },
-                {
                     "id": "createStaticUrlDialog",
                     "context": [
                         "compose",
@@ -88,6 +76,18 @@
                         "width": "medium",
                         "url": "https://helloworld36cffe.z5.web.core.windows.net/index.html#/tab"
                     }
+                },
+                {
+                    "id": "fetchUrlDialog",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Fetch a URL dialog",
+                    "title": "AE: Fetch URL Dialog",
+                    "type": "action",
+                    "fetchTask": true
                 },
                 {
                     "id": "fetchCardDialog",
@@ -110,5 +110,7 @@
         "identity",
         "messageTeamMembers"
     ],
-    "validDomains": []
+    "validDomains": [
+        "helloworld36cffe.z5.web.core.windows.net"
+    ]
 }
