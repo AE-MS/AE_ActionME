@@ -35,8 +35,8 @@
                         "message",
                         "commandBox"
                     ],
-                    "description": "Command to run action to create a Card from Compose Box",
-                    "title": "Create Card",
+                    "description": "Command to run action to create a static Card from Compose Box",
+                    "title": "AE: Create Static Card",
                     "type": "action",
                     "parameters": [
                         {
@@ -58,6 +58,48 @@
                             "inputType": "textarea"
                         }
                     ]
+                },
+                {
+                    "id": "fetchUrlDialog",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Fetch a URL dialog",
+                    "title": "AE: Fetch URL Dialog",
+                    "type": "action",
+                    "fetchTask": true
+                },
+                {
+                    "id": "createStaticUrlDialog",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Create static URL dialog",
+                    "title": "AE: Create static URL Dialog",
+                    "type": "action",
+                    "fetchTask": false,
+                    "taskInfo": {
+                        "title": "Create static URL Dialog",
+                        "height": "medium",
+                        "width": "medium",
+                        "url": "https://helloworld36cffe.z5.web.core.windows.net/index.html#/tab"
+                    }
+                },
+                {
+                    "id": "fetchCardDialog",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Fetch a card dialog",
+                    "title": "AE: Fetch a card dialog",
+                    "type": "action",
+                    "fetchTask": true
                 }
             ]
         }
