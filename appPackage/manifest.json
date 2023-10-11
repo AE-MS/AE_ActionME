@@ -111,6 +111,7 @@
         "messageTeamMembers"
     ],
     "validDomains": [
+        "localhost:53000",
         "helloworld36cffe.z5.web.core.windows.net"
     ]
 }

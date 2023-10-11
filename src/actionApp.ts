@@ -6,12 +6,16 @@ import {
   MessagingExtensionActionResponse,
   TaskModuleRequest,
   TaskModuleResponse,
+  ActionTypes,
 } from "botbuilder";
 
 const urlDialogTriggerValue = "requestUrl";
 const cardDialogTriggerValue = "requestCard";
 const messagePageTriggerValue = "requestMessage";
 const noResponseTriggerValue = "requestNoResponse";
+
+const pageDomain = "localhost:53000";
+// const pageDomain = "helloworld36cffe.z5.web.core.windows.net";
 
 const adaptiveCardBotJson = {
   "contentType": "application/vnd.microsoft.card.adaptive",
@@ -70,8 +74,61 @@ export class ActionApp extends TeamsActivityHandler {
       return this.createUrlTaskModuleMEResponse();
     } else if (commandData.data === cardDialogTriggerValue) {
       return this.createCardTaskModuleMEResponse();
+    } else if (commandData.data === messagePageTriggerValue) {
+      return this.createMessagePageMEResponse();
     }
-    
+
+    if (commandId === "createCard" && commandData.title === "config") {
+      return {
+        composeExtension: {
+          type: "config",
+          suggestedActions: {
+            actions: [
+                {
+                  title: "Config Action Title",
+                  type: ActionTypes.OpenUrl,
+                  value: `https://${pageDomain}/index.html?page=config#/tab`
+                },
+            ],
+        },
+      },
+      };
+    }
+   
+    if (commandId === "createCard" && commandData.title === "auth") {
+      return {
+        composeExtension: {
+          type: "config",
+          suggestedActions: {
+            actions: [
+                {
+                  title: "Auth Action Title",
+                  type: ActionTypes.OpenUrl,
+                  value: `https://${pageDomain}/index.html?page=auth#/tab`
+                },
+            ],
+          },
+        },
+      };
+    }
+
+    if (commandId === "createCard" && commandData.title === "sso") {
+      return {
+        composeExtension: {
+          type: 'silentAuth',
+          suggestedActions: {
+              actions: [
+                  {
+                    title: "SSO?",
+                    type: ActionTypes.OpenUrl,
+                    value: `https://${pageDomain}/index.html?page=auth#/tab`
+                  },
+              ],
+          },
+        },
+      };
+    }
+
     switch (commandId) {
       case "createCard":
         {
@@ -133,7 +190,7 @@ export class ActionApp extends TeamsActivityHandler {
       task: {
         type: 'continue',
         value: {
-          url: `https://helloworld36cffe.z5.web.core.windows.net/index.html?randomNumber=${this.getRandomIntegerBetween(1, 1000)}#/tab`,
+          url: `https://${pageDomain}/index.html?randomNumber=${this.getRandomIntegerBetween(1, 1000)}#/tab`,
           fallbackUrl: "https://thisisignored.example.com/",
           height: 510,
           width: 450,
@@ -153,6 +210,15 @@ export class ActionApp extends TeamsActivityHandler {
           width: 450,
           title: "Adaptive Card Dialog",
         }
+      }
+    });
+  }
+
+  private createMessagePageMEResponse(): Promise<MessagingExtensionActionResponse> {
+    return Promise.resolve({
+      task: {
+          type: 'message',
+          value: `Hello! This is a message!`,
       }
     });
   }
@@ -187,4 +253,11 @@ export class ActionApp extends TeamsActivityHandler {
 
     return;
   }
+
+  public override handleTeamsMessagingExtensionCardButtonClicked(_context: TurnContext, cardData: any): Promise<void> {
+    console.log(`HANDLING CARD BUTTON CLICKED. Card data: ${JSON.stringify(cardData)}`);
+
+    return;
+  }
+
 }
