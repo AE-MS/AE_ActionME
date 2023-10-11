@@ -100,7 +100,43 @@
                     "title": "AE: Fetch a card dialog",
                     "type": "action",
                     "fetchTask": true
-                }
+                },
+                {
+                    "id": "triggerConfigPage",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Trigger the config page",
+                    "title": "AE: Trigger config page",
+                    "type": "action",
+                    "fetchTask": true
+                },
+                {
+                    "id": "triggerOAuthPage",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Trigger the OAuth page",
+                    "title": "AE: Trigger OAuth page",
+                    "type": "action",
+                    "fetchTask": true
+                },
+                {
+                    "id": "triggerSsoPage",
+                    "context": [
+                        "compose",
+                        "message",
+                        "commandBox"
+                    ],
+                    "description": "Trigger the SSO page",
+                    "title": "AE: Trigger SSO page",
+                    "type": "action",
+                    "fetchTask": true
+                }                
             ]
         }
     ],

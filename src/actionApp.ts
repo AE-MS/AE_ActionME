@@ -98,7 +98,7 @@ export class ActionApp extends TeamsActivityHandler {
     if (commandId === "createCard" && commandData.title === "auth") {
       return {
         composeExtension: {
-          type: "config",
+          type: "auth",
           suggestedActions: {
             actions: [
                 {
@@ -132,41 +132,27 @@ export class ActionApp extends TeamsActivityHandler {
     switch (commandId) {
       case "createCard":
         {
-          const attachment = CardFactory.adaptiveCard({
-            $schema: "http://adaptivecards.io/schemas/adaptive-card.json",
-            type: "AdaptiveCard",
-            version: "1.4",
-            body: [
-              {
-                type: "TextBlock",
-                text: `${commandData.title}`,
-                wrap: true,
-                size: "Large",
-              },
-              {
-                type: "TextBlock",
-                text: `${commandData.subTitle}`,
-                wrap: true,
-                size: "Medium",
-              },
-              {
-                type: "TextBlock",
-                text: `${commandData.text}`,
-                wrap: true,
-                size: "Small",
-              },
-            ],
-            actions: [
-              {
-                type: "Action.Submit",
-                title: "Show URL Task Module",
-                value: {
+          const attachment = CardFactory.heroCard(
+            `${commandData.title} - ${commandData.subTitle}`,
+            commandData.text,
+            null, // no images
+            [{
+              type: 'invoke',
+              title: "Show URL Task Module",
+              value: {
                   type: 'task/fetch',
                   data: urlDialogTriggerValue
-                }
-              },
-            ],
-          });
+              }
+            },
+            {
+              type: 'invoke',
+              title: "Show Adaptive Card Task Module",
+              value: {
+                  type: 'task/fetch',
+                  data: cardDialogTriggerValue
+              }
+            }]
+          );
           return {
             composeExtension: {
               type: "result",
@@ -234,6 +220,54 @@ export class ActionApp extends TeamsActivityHandler {
       case "fetchUrlDialog" : {
         return this.createUrlTaskModuleMEResponse();
       }
+      case "triggerConfigPage" : {
+        return Promise.resolve({
+          composeExtension: {
+            type: "config",
+            suggestedActions: {
+              actions: [
+                  {
+                    title: "Trigger config page",
+                    type: ActionTypes.OpenUrl,
+                    value: `https://${pageDomain}/index.html?page=config#/tab`
+                  },
+              ],
+            },
+          },
+        });
+      }
+      case "triggerOAuthPage" : {
+        return Promise.resolve({
+          composeExtension: {
+            type: "auth",
+            suggestedActions: {
+              actions: [
+                  {
+                    title: "Auth Action Title",
+                    type: ActionTypes.OpenUrl,
+                    value: `https://${pageDomain}/index.html?page=auth#/tab`
+                  },
+              ],
+            },
+          },
+        });
+      }
+      case "triggerSsoPage" : {
+        return Promise.resolve({
+          composeExtension: {
+            type: 'silentAuth',
+            suggestedActions: {
+                actions: [
+                    {
+                      title: "SSO?",
+                      type: ActionTypes.OpenUrl,
+                      value: `https://${pageDomain}/index.html?page=auth#/tab`
+                    },
+                ],
+            },
+          },
+        });
+      }
       default : {
         console.log(`Unknown commandId: ${action.commandId}`);
       }
@@ -242,16 +276,42 @@ export class ActionApp extends TeamsActivityHandler {
     return;
   }
 
+  private createResponseToTaskModuleRequest(taskModuleRequest: TaskModuleRequest): Promise<TaskModuleResponse> {
+    const taskRequestData = taskModuleRequest.data.data;
+
+    switch (taskRequestData) {
+      case urlDialogTriggerValue:
+        return this.createUrlTaskModuleMEResponse();
+
+      case cardDialogTriggerValue:
+        return this.createCardTaskModuleMEResponse();
+
+      case messagePageTriggerValue:
+        return this.createMessagePageMEResponse();
+
+      case noResponseTriggerValue:
+        return;
+
+      default:
+        return Promise.resolve({
+          task: {
+              type: 'message',
+              value: `The submitted data did not contain a valid request (submitted data: ${taskModuleRequest.data})`,
+          }
+      });
+    }
+  }  
+  
   public override handleTeamsTaskModuleFetch(context: TurnContext, taskModuleRequest: TaskModuleRequest): Promise<TaskModuleResponse> {
     console.log(`TASK MODULE FETCH. Task module request: ${JSON.stringify(taskModuleRequest)}`);
 
-    return;
+    return this.createResponseToTaskModuleRequest(taskModuleRequest);
   }
 
   public override handleTeamsTaskModuleSubmit(_context: TurnContext, taskModuleRequest: TaskModuleRequest): Promise<TaskModuleResponse> {
     console.log(`HANDLING DIALOG SUBMIT. Task module request: ${JSON.stringify(taskModuleRequest)}`);
 
-    return;
+    return this.createResponseToTaskModuleRequest(taskModuleRequest);
   }
 
   public override handleTeamsMessagingExtensionCardButtonClicked(_context: TurnContext, cardData: any): Promise<void> {
